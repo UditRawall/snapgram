@@ -18,13 +18,14 @@ import { useUserContext } from "@/context/AuthContext";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import Loader from "@/components/shared/Loader";
 import { toast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 const SigninForm = () => {
 
   const navigate = useNavigate();
 
   const {checkAuthUser, isLoading: isUserLoading} = useUserContext();
-  const {mutateAsync: signInAccount} = useSignInAccount();
+  const {mutateAsync: signInAccount, isPending} = useSignInAccount();
 
 
   const form = useForm<z.infer<typeof signInValidation>>({
@@ -104,9 +105,15 @@ const SigninForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="shad-button_primary">{isUserLoading ? <div className="flex-center gap-2">
-         <Loader/> Loading...
-          </div> : "Sign In"}</Button>
+         <Button type="submit" className="shad-button_primary">
+            {isPending || isUserLoading ? (
+              <div className="flex-center gap-2">
+                <Loader /> Loading...
+              </div>
+            ) : (
+              "Log in"
+            )}
+          </Button>
           <p className="text-small-regular text-light-2 text-center mt-2">Don't have an account?<Link to='/sign-up' className="text-primary-500 text-small-semibold ml-1">Sign-up</Link></p>
          
         </form>   
