@@ -15,17 +15,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { postValidation } from '@/lib/validation';
 import { Textarea } from '../ui/textarea';
+import FileUploader from '../shared/FileUploader';
 
 const formSchema = z.object({
     username: z.string().min(2).max(50),
   })
 
-const PostForm = () => {
+const PostForm = ({post}) => {
 
     const form = useForm<z.infer<typeof postValidation>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          caption: "",
+          caption: post ? post?.caption : "",
+      file: [],
+      location: post ? post.location : "",
+      tags: post ? post.tags.join(",") : "",
         },
       });
 
@@ -36,7 +40,7 @@ const PostForm = () => {
       }
   return (
     <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col gap-4">
       <FormField
         control={form.control}
         name="caption"
@@ -57,9 +61,24 @@ const PostForm = () => {
         name="caption"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className='shad-form_label'>Upload File</FormLabel>
+            <FormLabel className='shad-form_label'>Add Photos</FormLabel>
             <FormControl>
-              <Textarea className='shad-textarea custom-scrollbar' {...field}
+              <FileUploader fieldChange={field?.onChange} mediaUrl={post?.imageUrl} />
+              
+            </FormControl>
+            
+            <FormMessage className='shad-form_message' />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="caption"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className='shad-form_label'>Add Location</FormLabel>
+            <FormControl>
+              <Input type="text" className='shad-input' {...field}
                />
             </FormControl>
             
@@ -72,9 +91,9 @@ const PostForm = () => {
         name="caption"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className='shad-form_label'>Location</FormLabel>
+            <FormLabel className='shad-form_label'>Add Tags (seprated by comma ' , ')</FormLabel>
             <FormControl>
-              <Input className='shad-input' {...field}
+              <Input type='text' className='shad-input' {...field}
                />
             </FormControl>
             
@@ -82,22 +101,11 @@ const PostForm = () => {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="caption"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='shad-form_label'>Caption</FormLabel>
-            <FormControl>
-              <Input className='shad-input' {...field}
-               />
-            </FormControl>
-            
-            <FormMessage className='shad-form_message' />
-          </FormItem>
-        )}
-      />
-      <Button type="submit">Submit</Button>
+      <div className='flex flex-1 justify-end items-center gap-4'>
+
+      <Button type="button" className='shad-button_dark_4'>Cancel</Button>
+      <Button type="submit" className='shad-button_primary whitespace-nowrap'>Submit</Button>
+      </div>
     </form>
   </Form>
   )
