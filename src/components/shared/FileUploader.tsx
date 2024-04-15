@@ -35,9 +35,12 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
     >
       <input {...getInputProps()} className="cursor-pointer" />
       {fileUrl ? (
+        <>
         <div className="flex flex-1 py-4">
           <img src={fileUrl} alt="post" width="100%" />
         </div>
+        <p className="file_uploader-label">Click or drag photo to replace</p>
+        </>
       ) : (
         <div className="file_uploader-box">
           <img

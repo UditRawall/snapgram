@@ -17,7 +17,7 @@ import { Link ,useNavigate} from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import Loader from "@/components/shared/Loader";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 
 const SigninForm = () => {
@@ -26,6 +26,8 @@ const SigninForm = () => {
 
   const {checkAuthUser, isLoading: isUserLoading} = useUserContext();
   const {mutateAsync: signInAccount, isPending} = useSignInAccount();
+
+  const {toast} = useToast();
 
 
   const form = useForm<z.infer<typeof signInValidation>>({
