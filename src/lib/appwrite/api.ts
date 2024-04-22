@@ -274,6 +274,7 @@ export async function getPostById(postId: string) {
 }
 
 export async function updatePost(post: IUpdatePost) {
+  debugger;
   const hasFileToUpdate = post.file?.length > 0;
 
   try {
@@ -307,7 +308,7 @@ export async function updatePost(post: IUpdatePost) {
       post.postId,
       {
         caption: post.caption,
-        imageurl: image.imageUrl,
+        imageUrl: image.imageUrl,
         imageId: image.imageId,
         location: post.location,
         tags: tags,
@@ -335,3 +336,27 @@ export async function updatePost(post: IUpdatePost) {
     console.log(error);
   }
 }
+
+
+export async function deletePost(postId?: string, imageId?: string) {
+  if(!postId || !imageId) return;
+
+  try {
+    const statusCode = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    );
+
+    if(!statusCode) throw Error;
+
+    // Delete file from storage
+    await deleteFile(imageId);
+    return {status: 'ok'};
+
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+

@@ -1,4 +1,3 @@
-import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,10 +15,11 @@ import { postValidation } from "@/lib/validation";
 import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { Models } from "appwrite";
-import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import Loader from "../shared/Loader";
 
 
 
@@ -30,6 +30,9 @@ type PostFormProps = {
 const PostForm = ({ post, action }: PostFormProps) => {
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+    useUpdatePost();
+  
 
   const { user } = useUserContext();
 
@@ -48,6 +51,22 @@ const PostForm = ({ post, action }: PostFormProps) => {
   });
 
   const handleSubmit = async (values: z.infer<typeof postValidation>) => {
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...values,
+        postId: post.$id,
+         imageId: post.imageId,
+         imageUrl: post.imageUrl,
+      });
+      if (!updatedPost) {
+        toast({
+          title: `${action} Failed...Please try again`,
+        });
+      } else {
+        navigate(`/posts/${post.$id}`);
+      }
+    }
+    //  action = create
     try {
       const newPost = await createPost({
         ...values,
@@ -151,9 +170,11 @@ const PostForm = ({ post, action }: PostFormProps) => {
             <Button
               type="submit"
               className="shad-button_primary whitespace-nowrap"
+              disabled={isLoadingCreate || isLoadingUpdate}
               
             >
-              Submit
+             {(isLoadingCreate || isLoadingUpdate) && <Loader />}
+            {action} Post
             </Button>
           </div>
         </form>
