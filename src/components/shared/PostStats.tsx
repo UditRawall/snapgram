@@ -1,4 +1,3 @@
-import { useUserContext } from "@/context/AuthContext";
 import {
   useDeleteSavePost,
   useGetCurrentUser,
@@ -7,9 +6,7 @@ import {
 } from "@/lib/react-query/queriesAndMutations";
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
-import { Mode } from "fs";
 import React, { useEffect, useState } from "react";
-import { record } from "zod";
 import Loader from "./Loader";
 
 type PostStatsProps = {
@@ -23,7 +20,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const [likes, setLikes] = useState(likedList);
   const [isSaved, setIsSaved] = useState(false);
 
-  const { mutate: likePost , isPending: isLoading } = useLikePost();
+  const { mutate: likePost  } = useLikePost();
   const { mutate: savePost, isPending: isSavingPost } = useSavePost();
   const { mutate: deleteSavePost ,isPending: isDeletingSaved} = useDeleteSavePost();
 

@@ -301,7 +301,7 @@ export async function updatePost(post: IUpdatePost) {
     // convert tags into array
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
 
-    //  update Post 
+    //  update Post
     const updatedPost = await databases.updateDocument(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
@@ -331,15 +331,13 @@ export async function updatePost(post: IUpdatePost) {
     }
 
     return updatedPost;
-
   } catch (error) {
     console.log(error);
   }
 }
 
-
 export async function deletePost(postId?: string, imageId?: string) {
-  if(!postId || !imageId) return;
+  if (!postId || !imageId) return;
 
   try {
     const statusCode = await databases.deleteDocument(
@@ -348,15 +346,32 @@ export async function deletePost(postId?: string, imageId?: string) {
       postId
     );
 
-    if(!statusCode) throw Error;
+    if (!statusCode) throw Error;
 
     // Delete file from storage
     await deleteFile(imageId);
-    return {status: 'ok'};
-
+    return { status: "ok" };
   } catch (error) {
     console.log(error);
   }
-
 }
 
+export async function getInfinitePosts({ pageParams }: { pageParams: number }) {
+  const queries: any[] = [Query.orderDesc("$createdAt"), Query.limit(10)];
+
+  if (pageParams) queries.push(Query.cursorAfter(pageParams.toString()));
+
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      queries
+    );
+
+    if (!posts) throw Error;
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+  }
+}

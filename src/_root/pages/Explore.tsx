@@ -1,8 +1,14 @@
+import GridPostList from "@/components/shared/GridPostList";
+import SearchResults from "@/components/shared/SearchResults";
 import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { useState } from "react";
 
 const Explore = () => {
   const [searchValue, setSearchValue] = useState("");
+
+  
+
   return (
     <div className="explore-container">
       <div className="explore-inner_container">
@@ -35,9 +41,14 @@ const Explore = () => {
           />
         </div>
       </div>
-      <div className="">
-        { }
-      </div>
+      <div className="flex flex-wrap gap-9 w-full max-w-5xl">
+        {shouldShowSearchResults ? (
+          <SearchResults />
+        ) : shouldShowPosts ? (<p className="text-light-4 mt-10 text-center w-full">End of posts</p>): PostStats.pages.map((item, index)=>(
+          <GridPostList key={`page-${index}`} posts= {item.documnets} />
+        ))
+        }
+        </div>
     </div>
   );
 };
