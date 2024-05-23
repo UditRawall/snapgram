@@ -27,6 +27,11 @@ const Explore = () => {
   // const { ref, inView } = useInView();
   const [searchValue, setSearchValue] = useState("");
 
+  // const post = [];
+
+  // const shouldShowSearchResults = searchValue !== '';
+  // const shouldShowPosts = !shouldShowSearchResults && post.pages.every((item)=> item.documents.length === 0);
+
   
 
   return (
