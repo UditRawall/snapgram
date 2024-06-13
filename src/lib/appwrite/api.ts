@@ -3,7 +3,7 @@ import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { ID } from "appwrite";
 import { Query } from "appwrite";
 
-export async function createUserAccount(user: INewUser) {
+export async function createUserAccount(user: INewUser) { //promise
   try {
     const newAccount = await account.create(
       ID.unique(),
@@ -49,6 +49,7 @@ export async function saveUserToDB(user: {
     console.log(error);
   }
 }
+
 
 export async function signInAccount(user: { email: string; password: string }) {
   try {
@@ -356,10 +357,12 @@ export async function deletePost(postId?: string, imageId?: string) {
   }
 }
 
-export async function getInfinitePosts({ pageParams }: { pageParams: number }) {
-  const queries: any[] = [Query.orderDesc("$createdAt"), Query.limit(10)];
+export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
 
-  if (pageParams) {queries.push(Query.cursorAfter(pageParams.toString()));}
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
 
   try {
     const posts = await databases.listDocuments(
@@ -378,8 +381,6 @@ export async function getInfinitePosts({ pageParams }: { pageParams: number }) {
 
 
 export async function searchPost(searchTerm: string) {
-
-
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -395,4 +396,25 @@ export async function searchPost(searchTerm: string) {
   }
 }
 
+// users
+
+export async function getUsers(limit?: number) {
+  const queries:any[] = [Query.orderDesc("$createdAt")];
+
+  if(limit) {
+    queries.push(Query.limit(limit));
+  }
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      queries
+    );
+
+    if(!users) throw Error;
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
