@@ -1,11 +1,10 @@
 import { Models } from "appwrite"
 import Loader from "./Loader"
-import { Grid } from "lucide-react"
 import GridPostList from "./GridPostList"
 
 type SearchResultProps = {
   isSearchFetching: boolean,
-  searchedPosts: Models.Document[]
+  searchedPosts: Models.Document[] | null;
 }
 const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) => {
  if(isSearchFetching) {
@@ -14,8 +13,8 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
   </div>
  }
 
- if(searchedPosts && searchedPosts.documents.length > 0) {
-  return (<GridPostList posts={searchedPosts.documents} />);
+ if(searchedPosts && searchedPosts.length > 0) {
+  return (<GridPostList posts={searchedPosts} />);
 }
 
 
