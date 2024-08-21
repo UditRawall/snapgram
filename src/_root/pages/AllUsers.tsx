@@ -23,7 +23,7 @@ return (
           <ul className="user-grid">
             {creators?.documents.map((creator)=> (
               <li key={creator?.$id} className="flex-1 min-w-[200px] w-full">
-                {/* <UserCard user={creator} /> */}
+                <UserCard user={creator} />
               </li>
             ))}
           </ul>
